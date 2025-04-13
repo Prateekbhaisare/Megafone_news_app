@@ -5,11 +5,10 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../models/model/home_model_one.dart';
 class HomeRepositoryOne{
-
   final String _boxStorage = 'Hive_Storage_One';
     Future<List<ArticleModelOne>> fetchList() async{
       try{
-        final response = await http.get(Uri.parse('https://newsapi.org/v2/everything?q=apple&from=2025-04-10&to=2025-04-10&sortBy=popularity&apiKey=92db6e64fa274d74a61d50776ab09b2d'));
+        final response = await http.get(Uri.parse('https://newsapi.org/v2/everything?q=apple&from=2025-04-12&to=2025-04-12&sortBy=popularity&apiKey=92db6e64fa274d74a61d50776ab09b2d'));
         if(response.statusCode == 200){
           final data = jsonDecode(response.body);
           final articles = data['articles'] as List;
@@ -34,7 +33,7 @@ class HomeRepositoryOne{
         final cachedData =  box.values.toList();
 
         if(cachedData.isEmpty){
-          throw Exception('cached data is not avaiable');
+          throw Exception('cached data is not available');
         }
         return cachedData;
 
@@ -42,7 +41,7 @@ class HomeRepositoryOne{
       } on TimeoutException{
         throw Exception('Connection time out');
       }
-      // throw Exception('unimplimented errors');
+      // throw Exception('unimplemented errors');
   }
   
   Future<Box<ArticleModelOne>> getBox() async{

@@ -26,11 +26,16 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     super.initState();
     _controller = TextEditingController();
     _focusNode = FocusNode();
+    // Unfocused keyboard
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(mounted){
+        _focusNode.unfocus();
+      }
+    });
   }
 
   @override
   void dispose() {
-    _focusNode.unfocus();
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -38,47 +43,54 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _controller,
-      focusNode: _focusNode,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      autofocus: false,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.grey.shade400),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.grey.shade500),
-        ),
-        prefixIcon: const Icon(
-          Icons.search_outlined,
-          size: 35,
-          color: Colors.grey,
-        ),
-        suffixIcon: Icon(
-          widget.suffixIcon,
-          size: 30,
-          color: Colors.blueAccent.shade700,
-        ),
-        hintText: widget.hintText,
-        hintStyle: TextStyle(color: Colors.grey.shade200),
-      ),
-      onChanged: (filterKey) {
-        context.read<HomeScreenBloc>().add(SearchItems(filterKey));
-      },
-      // Add onTap handler to explicitly manage focus
+    return GestureDetector(
       onTap: () {
-        if (!_focusNode.hasFocus) {
-          _focusNode.requestFocus();
-        }
+        // Do nothing here, just prevent parent listeners
       },
+      child: TextField(
+        autofocus: false,
+        controller: _controller,
+        focusNode: _focusNode,
+        style: const TextStyle(color: Colors.white),
+        cursorColor: Colors.white,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.search,
+        autocorrect: false,
+        enableSuggestions: false,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.grey.shade500),
+          ),
+          prefixIcon: const Icon(
+            Icons.search_outlined,
+            size: 35,
+            color: Colors.grey,
+          ),
+          suffixIcon: Icon(
+            widget.suffixIcon,
+            size: 30,
+            color: Colors.blueAccent.shade700,
+          ),
+          hintText: widget.hintText,
+          hintStyle: TextStyle(color: Colors.grey.shade200),
+        ),
+        onChanged: (filterKey) {
+          context.read<HomeScreenBloc>().add(SearchItems(filterKey));
+        },
+        onSubmitted: (value) {
+          // Clear focus when submitted
+          _focusNode.unfocus();
+        },
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:live_news/routes/routes.dart';
 import 'package:live_news/data/local/hive_one.dart';
 import 'package:live_news/data/local/hive_two.dart';
@@ -17,16 +18,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+    return KeyboardVisibilityProvider(
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          initialRoute: RoutesName.splashScreen,
+          onGenerateRoute: Routes.generateRoute,
         ),
-        initialRoute: RoutesName.splashScreen,
-        onGenerateRoute: Routes.generateRoute,
-      );
+    );
   }
 }
 
